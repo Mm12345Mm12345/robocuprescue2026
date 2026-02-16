@@ -27,7 +27,7 @@ pinMode(rightSensor,INPUT);
 Serial.begin(9600);
 
 }
-
+// this is forward
 void forward() {
  digitalWrite(in1,HIGH);
 digitalWrite(in2,LOW);
