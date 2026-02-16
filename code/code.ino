@@ -73,7 +73,7 @@ void loop() {
   
   if (digitalRead(leftSensor)==HIGH && digitalRead(centerSensor)==LOW && digitalRead(rightSensor)==HIGH)
   {
-  // forward();
+    forward();
   }
   else if (digitalRead(leftSensor)==LOW && digitalRead(centerSensor)==HIGH && digitalRead(rightSensor)==HIGH)
   {
