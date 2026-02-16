@@ -12,6 +12,11 @@
 
 const int speed = 225;
 
+long long current_millis = 0;
+long long start_millis = 0;
+
+const int forward_check_time = 1000;
+
 void setup() {
   // put your setup code here, to run once:
   pinMode(ena,OUTPUT);
@@ -27,7 +32,16 @@ void setup() {
 
   Serial.begin(9600);
 }
-// this is forward
+
+void forward_a_bit(){
+  start_millis = millis();
+  current_millis = millis();
+
+  while(current_millis - start_millis < forward_check_time){
+    forward();
+  }
+}
+
 void forward() {
   digitalWrite(in1,HIGH);
   digitalWrite(in2,LOW);
@@ -77,11 +91,11 @@ void loop() {
   }
   else if (digitalRead(leftSensor)==LOW && digitalRead(centerSensor)==HIGH && digitalRead(rightSensor)==HIGH)
   {
-   left();
+    left();
   }
   else if (digitalRead(leftSensor)==HIGH && digitalRead(centerSensor)==HIGH && digitalRead(rightSensor)==LOW)
   {
-   right();
+    right();
   }
   if (digitalRead(leftSensor)==LOW && digitalRead(centerSensor)==LOW && digitalRead(rightSensor)==HIGH)
   {
