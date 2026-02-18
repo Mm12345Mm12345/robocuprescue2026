@@ -15,12 +15,14 @@
 
 const int speed = 200;
 
+// bool is_checking = false;
+// bool was_left, was_right = false;
 bool current_turn = LEFT;
 
 long long current_millis = 0;
 long long start_millis = 0;
 
-const int forward_check_time = 500;
+const int max_turn_time = 1000;
 
 void setup() {
   // put your setup code here, to run once:
@@ -38,17 +40,18 @@ void setup() {
   Serial.begin(9600);
 }
 
-void forward_a_bit(){
-  start_millis = millis();
-  current_millis = millis();
+// void forward_a_bit(){
+//   is_checking = true;
+//   start_millis = millis();
+//   current_millis = millis();
 
-  while(current_millis - start_millis < forward_check_time){
-    current_millis = millis();
-    forward();
-  }
+//   while(current_millis - start_millis < forward_check_time){
+//     current_millis = millis();
+//     forward();
+//   }
 
-  current_turn ? left() : right();
-}
+//   current_turn ? right() : left();
+// }
 
 void forward() {
   digitalWrite(in1,HIGH);
@@ -92,24 +95,37 @@ void loop() {
   Serial.print("\t");
   Serial.println(digitalRead(rightSensor));
 
+  current_millis = millis();
+  if (current_millis - start_millis > max_turn_time){
+    current_turn ? right() : left();
+  }
 
-  if (digitalRead(leftSensor)==HIGH && digitalRead(centerSensor)==HIGH && digitalRead(rightSensor)==HIGH){
-    forward_a_bit();
-  }
+  // if (digitalRead(leftSensor)==HIGH && digitalRead(centerSensor)==HIGH && digitalRead(rightSensor)==HIGH && !is_checking){
+  //   forward_a_bit();
+  // }
   
-  if (digitalRead(leftSensor)==HIGH && digitalRead(centerSensor)==LOW && digitalRead(rightSensor)==HIGH)
-  {
-    forward();
-  }
-  else if (digitalRead(leftSensor)==LOW && digitalRead(centerSensor)==HIGH && digitalRead(rightSensor)==HIGH)
+  // if (digitalRead(leftSensor)==HIGH && digitalRead(centerSensor)==LOW && digitalRead(rightSensor)==HIGH)
+  // {
+  //   forward();
+  // }
+  if (digitalRead(leftSensor)==LOW && digitalRead(centerSensor)==HIGH && digitalRead(rightSensor)==HIGH)
   {
     left();
     current_turn = LEFT;
+
+    start_millis = millis();
+    // was_left = true;
+    // if (was_right && was_left){
+    //   is_checking = false;
+    // }
   }
   else if (digitalRead(leftSensor)==HIGH && digitalRead(centerSensor)==HIGH && digitalRead(rightSensor)==LOW)
   {
     right();
     current_turn = RIGHT;
+
+    start_millis = millis();
+    // is_checking = false;
   }
   // if (digitalRead(leftSensor)==LOW && digitalRead(centerSensor)==LOW && digitalRead(rightSensor)==HIGH)
   // {
