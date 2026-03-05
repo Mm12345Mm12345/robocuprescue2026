@@ -76,16 +76,13 @@ void loop() {
   // {
   //   forward();
   // }
-  if (!leftInput && centerInput && rightInput)
-  {
+  if (!leftInput && centerInput && rightInput) {
     left();
   }
-  else if (leftInput && centerInput && !rightInput)
-  {
+  else if (leftInput && centerInput && !rightInput) {
     right();
   }
-  if (!leftInput && !centerInput && rightInput)
-  {
+  if (!leftInput && !centerInput && rightInput) {
     digitalWrite(in1,LOW);
     digitalWrite(in2,HIGH);
     analogWrite(ena,200);
@@ -93,8 +90,7 @@ void loop() {
     digitalWrite(in4,LOW);
     analogWrite(enb,200);
   }
-  if (leftInput && !centerInput && !rightInput)
-  {
+  if (leftInput && !centerInput && !rightInput) {
     digitalWrite(in1,HIGH);
     digitalWrite(in2,LOW);
     analogWrite(ena,200);
