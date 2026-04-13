@@ -61,7 +61,6 @@ void forward() {
   digitalWrite(in4,LOW);
   analogWrite(enb, speed);
 }
-
 void right() {
   digitalWrite(in1,LOW);
   digitalWrite(in2,LOW);
@@ -70,7 +69,6 @@ void right() {
   digitalWrite(in4,LOW);
   analogWrite(enb, speed);
 }
-
 void left() {
   digitalWrite(in1,HIGH);
   digitalWrite(in2,LOW);
@@ -89,11 +87,15 @@ void stop() {
 }
 
 void loop() {
-  Serial.print(digitalRead(leftSensor));
+  leftInput = digitalRead(leftSensor); // digital read returns true if it doesn't detect a line, and false if it does
+  centerInput = digitalRead(centerSensor);
+  rightInput = digitalRead(rightSensor);
+
+  Serial.print(leftInput);
   Serial.print("\t");
-  Serial.print(digitalRead(centerSensor));
+  Serial.print(centerInput);
   Serial.print("\t");
-  Serial.println(digitalRead(rightSensor));
+  Serial.println(rightInput);
 
   current_millis = millis();
   if (current_millis - start_millis > max_turn_time){
