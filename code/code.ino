@@ -1,3 +1,5 @@
+// #include <NewPing.h>
+
 // pins
 #define ena 2
 #define in1 3
@@ -6,23 +8,29 @@
 #define in4 6
 #define enb 7
 
-#define LEFT true
-#define RIGHT false
-
 #define leftSensor 28
 #define centerSensor 27
 #define rightSensor 26
 
-const int speed = 200;
 
-// bool is_checking = false;
-// bool was_left, was_right = false;
-bool current_turn = LEFT;
+// #define front_trigPin 11
+// #define front_echoPin 10
 
-long long current_millis = 0;
-long long start_millis = 0;
+// #define side_trigPin 9
+// #define side_echoPin 8
 
-const int max_turn_time = 1000;
+// NewPing front_sonar(front_trigPin, front_echoPin, MAX_DISTANCE);
+// NewPing side_sonar(front_echoPin, FRONT_ECHO_PIN, MAX_DISTANCE);
+
+
+const int speed = 200
+
+long duration;
+long distance;
+long sum = 0;
+
+int numberOfSamples = 10, counter=0;
+
 
 void setup() {
   // put your setup code here, to run once:
@@ -38,21 +46,9 @@ void setup() {
   pinMode(rightSensor,INPUT);
 
   Serial.begin(9600);
+
 }
-
-// void forward_a_bit(){
-//   is_checking = true;
-//   start_millis = millis();
-//   current_millis = millis();
-
-//   while(current_millis - start_millis < forward_check_time){
-//     current_millis = millis();
-//     forward();
-//   }
-
-//   current_turn ? right() : left();
-// }
-
+// this is forward
 void forward() {
   digitalWrite(in1,HIGH);
   digitalWrite(in2,LOW);
@@ -61,6 +57,7 @@ void forward() {
   digitalWrite(in4,LOW);
   analogWrite(enb, speed);
 }
+
 void right() {
   digitalWrite(in1,LOW);
   digitalWrite(in2,LOW);
@@ -69,6 +66,7 @@ void right() {
   digitalWrite(in4,LOW);
   analogWrite(enb, speed);
 }
+
 void left() {
   digitalWrite(in1,HIGH);
   digitalWrite(in2,LOW);
@@ -87,64 +85,71 @@ void stop() {
 }
 
 void loop() {
-  leftInput = digitalRead(leftSensor); // digital read returns true if it doesn't detect a line, and false if it does
-  centerInput = digitalRead(centerSensor);
-  rightInput = digitalRead(rightSensor);
-
-  Serial.print(leftInput);
+  Serial.print(digitalRead(leftSensor));
   Serial.print("\t");
-  Serial.print(centerInput);
+  Serial.print(digitalRead(centerSensor));
   Serial.print("\t");
-  Serial.println(rightInput);
+  Serial.println(digitalRead(rightSensor));
 
-  current_millis = millis();
-  if (current_millis - start_millis > max_turn_time){
-    current_turn ? right() : left();
-  }
-
-  // if (digitalRead(leftSensor)==HIGH && digitalRead(centerSensor)==HIGH && digitalRead(rightSensor)==HIGH && !is_checking){
-  //   forward_a_bit();
-  // }
   
-  // if (digitalRead(leftSensor)==HIGH && digitalRead(centerSensor)==LOW && digitalRead(rightSensor)==HIGH)
-  // {
-  //   forward();
-  // }
-  if (digitalRead(leftSensor)==LOW && digitalRead(centerSensor)==HIGH && digitalRead(rightSensor)==HIGH)
+  if (digitalRead(leftSensor)==HIGH && digitalRead(centerSensor)==LOW && digitalRead(rightSensor)==HIGH)
   {
-    left();
-    current_turn = LEFT;
-
-    start_millis = millis();
-    // was_left = true;
-    // if (was_right && was_left){
-    //   is_checking = false;
-    // }
+  // forward();
+  }
+  else if (digitalRead(leftSensor)==LOW && digitalRead(centerSensor)==HIGH && digitalRead(rightSensor)==HIGH)
+  {
+   left();
   }
   else if (digitalRead(leftSensor)==HIGH && digitalRead(centerSensor)==HIGH && digitalRead(rightSensor)==LOW)
   {
-    right();
-    current_turn = RIGHT;
-
-    start_millis = millis();
-    // is_checking = false;
+   right();
   }
-  // if (digitalRead(leftSensor)==LOW && digitalRead(centerSensor)==LOW && digitalRead(rightSensor)==HIGH)
-  // {
-  //   digitalWrite(in1,LOW);
-  //   digitalWrite(in2,HIGH);
-  //   analogWrite(ena,200);
-  //   digitalWrite(in3,HIGH);
-  //   digitalWrite(in4,LOW);
-  //   analogWrite(enb,200);
+  if (digitalRead(leftSensor)==LOW && digitalRead(centerSensor)==LOW && digitalRead(rightSensor)==HIGH)
+  {
+      digitalWrite(in1,LOW);
+      digitalWrite(in2,HIGH);
+      analogWrite(ena,200);
+      digitalWrite(in3,HIGH);
+      digitalWrite(in4,LOW);
+      analogWrite(enb,200);
+  }
+  if (digitalRead(leftSensor)==HIGH && digitalRead(centerSensor)==LOW && digitalRead(rightSensor)==LOW)
+  {
+      digitalWrite(in1,HIGH);
+      digitalWrite(in2,LOW);
+      analogWrite(ena,200);
+      digitalWrite(in3,LOW);
+      digitalWrite(in4,HIGH);
+      analogWrite(enb,200);
+  }
+  else{
+    // stop();
+  }
+
+  // while(counter < numberOfSamples){
+    
+  // getDistance();
+    
+  //   if(distance > 3 && distance < 300){
+  //     sum += distance;
+  //     counter++;
+  //   }
   // }
-  // if (digitalRead(leftSensor)==HIGH && digitalRead(centerSensor)==LOW && digitalRead(rightSensor)==LOW)
-  // {
-  //   digitalWrite(in1,HIGH);
-  //   digitalWrite(in2,LOW);
-  //   analogWrite(ena,200);
-  //   digitalWrite(in3,LOW);
-  //   digitalWrite(in4,HIGH);
-  //   analogWrite(enb,200);
-  // }
+    
+  // Serial.print("average distance[cm] = ");
+  // Serial.println(sum/counter);
+  // delay(10);
+  // counter = 0;
+  // sum=0;
 }
+
+// int getDistance(){
+//   digitalWrite(front_trigPin, LOW);
+//   delayMicroseconds(2); 
+//   digitalWrite(front_trigPin, HIGH);
+//   delayMicroseconds(10);
+//   digitalWrite(front_trigPin, LOW);
+  
+//   duration = pulseIn(front_echoPin,HIGH);
+//   distance = duration/58.1;
+// }
