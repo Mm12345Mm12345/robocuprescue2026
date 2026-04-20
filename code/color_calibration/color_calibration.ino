@@ -47,7 +47,7 @@ void setup() {
   pinMode(RIGHT_S3, OUTPUT);
   pinMode(RIGHT_sensorOut, INPUT);
 
-  // Setting frequency-scaling to 20%
+  // Setting frequency-scaling to 100%
   digitalWrite(LEFT_S0, HIGH);
   digitalWrite(LEFT_S1, HIGH);
   digitalWrite(RIGHT_S0, HIGH);
@@ -59,28 +59,64 @@ void setup() {
 void loop() {
   delay(5000);
   int start_millis = millis();
-  float average = 0;
+  float greenAverage = 0;
+  float redAverage = 0;
+  float blueAverage = 0;
   float items = 0;
-  Serial.println("calculating right green average...");
+  Serial.println("calculating right average...");
   while(millis() < start_millis + 5000){
-    float item = getGreen(RIGHT);
-    average = ((average * items) + item)/(items+1.0);
+    int green = getGreen(RIGHT)
+    greenAverage = ((greenAverage * items) + green)/(items+1.0);
+    Serial.print(green);
+    Serial.print(" ");
+
+    int red = getRed(RIGHT);
+    redAverage =   ((redAverage * items) + red)/(items+1.0);
+    Serial.print(red);
+    Serial.print(" ");
+
+    int blue = getBlue(RIGHT);
+    blueAverage =  ((blueAverage * items) + blue)/(items+1.0);
+    Serial.println(blue);
+
     items++;
   }
   Serial.print("right green average: ");
-  Serial.print(average);
+  Serial.print(greenAverage);
+  Serial.print("   right red average: ");
+  Serial.print(redAverage);
+  Serial.print("   right blue average: ");
+  Serial.println(blueAverage);
 
   delay(5000);
 
   start_millis = millis();
-  average = 0;
+  greenAverage = 0;
+  redAverage = 0;
+  blueAverage = 0;
   items = 0;
-  Serial.println("calculating right green average...");
+  Serial.println("calculating left average...");
   while(millis() < start_millis + 5000){
-    float item = getGreen(LEFT);
-    average = ((average * items) + item)/(items+1.0);
+    int green = getGreen(LEFT)
+    greenAverage = ((greenAverage * items) + green)/(items+1.0);
+    Serial.print(green);
+    Serial.print(" ");
+
+    int red = getRed(LEFT)
+    redAverage =   ((redAverage * items) + red)/(items+1.0);
+    Serial.print(red);
+    Serial.print(" ");
+
+    int blue = getBlue(LEFT)
+    blueAverage =  ((blueAverage * items) + blue)/(items+1.0);
+    Serial.println(blue);
+
     items++;
   }
   Serial.print("left green average: ");
-  Serial.print(average);
+  Serial.print(greenAverage);
+  Serial.print("   left red average: ");
+  Serial.print(redAverage);
+  Serial.print("   left blue average: ");
+  Serial.println(blueAverage);
 }
