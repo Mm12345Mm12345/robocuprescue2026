@@ -63,6 +63,7 @@ int getBlue(bool direction){
 }
 
 const int colorCheckInterval = 50;
+const int colorTurnTime = 2000;
 int timer = 0;
 
 
@@ -109,6 +110,17 @@ void setup() {
   Serial.begin(9600);
 
 }
+
+bool isGreen(bool direction){
+  int greenValue = getGreen(direction);
+  int redValue = getRed(direction);
+  int blueValue = getBlue(direction);
+
+  // logic
+
+  return true;
+}
+
 // this is forward
 void forward() {
   digitalWrite(in1,HIGH);
@@ -136,6 +148,22 @@ void left() {
   digitalWrite(in4,LOW);
   analogWrite(enb, speed);
 }
+void tank_right(){
+  digitalWrite(in1,HIGH);
+  digitalWrite(in2,LOW);
+  analogWrite(ena,200);
+  digitalWrite(in3,LOW);
+  digitalWrite(in4,HIGH);
+  analogWrite(enb,200);
+}
+void tank_left(){
+  digitalWrite(in1,LOW);
+  digitalWrite(in2,HIGH);
+  analogWrite(ena,200);
+  digitalWrite(in3,HIGH);
+  digitalWrite(in4,LOW);
+  analogWrite(enb,200);
+}
 void stop() {
   digitalWrite(in1,HIGH);
   digitalWrite(in2,LOW);
@@ -144,6 +172,7 @@ void stop() {
   digitalWrite(in4,LOW);
   analogWrite(enb,0);
 }
+
 
 void loop() {
   // Serial.print(digitalRead(leftSensor));
@@ -170,41 +199,47 @@ void loop() {
 
     timer = millis();
   }
-  
-  
-  if (digitalRead(leftSensor)==HIGH && digitalRead(centerSensor)==LOW && digitalRead(rightSensor)==HIGH)
-  {
-  // forward();
+
+  bool isGreenRight = isGreen(RIGHT);
+  bool isGreenLeft = isGreen(LEFT);
+
+
+  if (isGreenRight && isGreenLeft){
+    tank_right();
+    delay(colorTurnTime);
   }
-  else if (digitalRead(leftSensor)==LOW && digitalRead(centerSensor)==HIGH && digitalRead(rightSensor)==HIGH)
+  else if (isGreenRight){
+    right();
+    delay(colorTurnTime);
+  }
+  else if (isGreenLeft){
+    left();
+    delay(colorTurnTime);
+  }  
+  
+  // if (digitalRead(leftSensor)==HIGH && digitalRead(centerSensor)==LOW && digitalRead(rightSensor)==HIGH)
+  // {
+  // // forward();
+  // }
+  if (digitalRead(leftSensor)==LOW && digitalRead(centerSensor)==HIGH && digitalRead(rightSensor)==HIGH)
   {
-   left();
+    left();
   }
   else if (digitalRead(leftSensor)==HIGH && digitalRead(centerSensor)==HIGH && digitalRead(rightSensor)==LOW)
   {
-   right();
+    right();
   }
   if (digitalRead(leftSensor)==LOW && digitalRead(centerSensor)==LOW && digitalRead(rightSensor)==HIGH)
   {
-      digitalWrite(in1,LOW);
-      digitalWrite(in2,HIGH);
-      analogWrite(ena,200);
-      digitalWrite(in3,HIGH);
-      digitalWrite(in4,LOW);
-      analogWrite(enb,200);
+    tank_left();
   }
   if (digitalRead(leftSensor)==HIGH && digitalRead(centerSensor)==LOW && digitalRead(rightSensor)==LOW)
   {
-      digitalWrite(in1,HIGH);
-      digitalWrite(in2,LOW);
-      analogWrite(ena,200);
-      digitalWrite(in3,LOW);
-      digitalWrite(in4,HIGH);
-      analogWrite(enb,200);
+    tank_left();
   }
-  else{
-    // stop();
-  }
+  // else{
+  //   // stop();
+  // }
 
   // while(counter < numberOfSamples){
     
