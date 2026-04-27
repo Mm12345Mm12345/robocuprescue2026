@@ -9,7 +9,7 @@
 #define enb 7
 
 #define leftSensor 28
-#define centerSensor 27
+#define centerSensor 29
 #define rightSensor 26
 
 
@@ -184,18 +184,18 @@ void left() {
 void tank_right(){
   digitalWrite(in1,HIGH);
   digitalWrite(in2,LOW);
-  analogWrite(ena,200);
+  analogWrite(ena,speed);
   digitalWrite(in3,LOW);
   digitalWrite(in4,HIGH);
-  analogWrite(enb,200);
+  analogWrite(enb,speed);
 }
 void tank_left(){
   digitalWrite(in1,LOW);
   digitalWrite(in2,HIGH);
-  analogWrite(ena,200);
+  analogWrite(ena,speed);
   digitalWrite(in3,HIGH);
   digitalWrite(in4,LOW);
-  analogWrite(enb,200);
+  analogWrite(enb,speed);
 }
 void stop() {
   digitalWrite(in1,HIGH);
@@ -226,7 +226,7 @@ void loop() {
   //   stop();
   //   intersection();
   // }
-  /*else */if (digitalRead(leftSensor)==HIGH && digitalRead(rightSensor)==HIGH)
+  /*else */if (digitalRead(leftSensor)==HIGH && digitalRead(centerSensor)==LOW && digitalRead(rightSensor)==HIGH)
   {
     forward();
   }
