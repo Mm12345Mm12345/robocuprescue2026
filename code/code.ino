@@ -25,7 +25,7 @@ Ultrasonic ultrasonic_side(side_trigPin, side_echoPin);
 const int object_detection_distance = 12; // cm
 
 int object_evation_timer = 0;
-const int object_evation_time = 100;
+const int object_evation_time = 1000;
 
 
 #define LEFT_S0 46
@@ -124,12 +124,12 @@ bool isGreen(bool direction){
   int redValue = getRed(direction);
   int blueValue = getBlue(direction);
 
-  Serial.print(greenValue);
-  Serial.print(" ");
-  Serial.print(redValue);
-  Serial.print(" ");
-  Serial.print(blueValue);
-  Serial.print("  ");
+  // Serial.print(greenValue);
+  // Serial.print(" ");
+  // Serial.print(redValue);
+  // Serial.print(" ");
+  // Serial.print(blueValue);
+  // Serial.print("  ");
 
   if (redValue > 13 && greenValue > 13 && blueValue > 13){
     return true;
@@ -230,10 +230,16 @@ void obstacle(){
   stop();
   delay(1000);
 
-  while (ultrasonic_side.read() > object_detection_distance + 10){
+  int distance = 357;
+
+  while (distance > object_detection_distance + 10){
     tank_right();
+    distance = ultrasonic_side.read();
+    if (distance == 0) {distance = 357;}
+    Serial.println(distance);
     // digitalWrite(13, HIGH);
   }
+  distance = 357;
   // digitalWrite(13, LOW);
   while (digitalRead(leftSensor)==HIGH && digitalRead(centerSensor)==HIGH && digitalRead(rightSensor)==HIGH){
     if (millis() < object_evation_timer + object_evation_time){
@@ -241,8 +247,11 @@ void obstacle(){
     }
     else {
       object_evation_timer = millis();
-      while(ultrasonic_side.read() > object_detection_distance + 10){
-        tank_left();
+      while(distance > object_detection_distance + 10){
+        tank_right();
+        distance = ultrasonic_side.read();
+        if (distance == 0) {distance = 357;}
+        Serial.println(distance);
       }
     }
   }
@@ -250,14 +259,14 @@ void obstacle(){
 }
 
 void loop() {
-  // Serial.print(ultrasonic_front.read());
-  // Serial.print("    ");
-  // Serial.println(ultrasonic_side.read());
-  Serial.print(digitalRead(leftSensor));
-  Serial.print("\t");
-  Serial.print(digitalRead(centerSensor));
-  Serial.print("\t");
-  Serial.println(digitalRead(rightSensor));
+  Serial.print(ultrasonic_front.read());
+  Serial.print("    ");
+  Serial.println(ultrasonic_side.read());
+  // Serial.print(digitalRead(leftSensor));
+  // Serial.print("\t");
+  // Serial.print(digitalRead(centerSensor));
+  // Serial.print("\t");
+  // Serial.println(digitalRead(rightSensor));
 
 
   // if (isRed(LEFT) || isRed(RIGHT)){
@@ -280,9 +289,9 @@ void loop() {
   {
     right();
   }
-  // int distance = ultrasonic_front.read();
-  // if (distance == 0){ distance = 357;}
-  // if (distance < object_detection_distance){
-  //   obstacle();
-  // }
+  int distance = ultrasonic_front.read();
+  if (distance == 0){ distance = 357;}
+  if (distance < object_detection_distance){
+    obstacle();
+  }
 }
