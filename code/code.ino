@@ -95,12 +95,12 @@ void setup() {
   pinMode(RIGHT_S3, OUTPUT);
   pinMode(RIGHT_sensorOut, INPUT);
 
-  // Setting frequency-scaling to 20%
+  // Setting frequency-scaling to 100%
   digitalWrite(LEFT_S0, HIGH);
   digitalWrite(LEFT_S1, HIGH);
   digitalWrite(RIGHT_S0, HIGH);
-  digitalWrite(RIGHT_S1, HIGH);digitalWrite(13, LOW);
-
+  digitalWrite(RIGHT_S1, HIGH);
+  
   pinMode(ena,OUTPUT);
   pinMode(in1,OUTPUT);
   pinMode(in2,OUTPUT);
@@ -112,9 +112,10 @@ void setup() {
   pinMode(centerSensor,INPUT);
   pinMode(rightSensor,INPUT);
 
-  pinMode(13, OUTPUT);
+  // pinMode(13, OUTPUT);
 
   Serial.begin(9600);
+  forward();
 
 }
 
@@ -138,15 +139,15 @@ bool isGreen(bool direction){
   }
 }
 
-bool isRed(bool direction){
-  int greenValue = getGreen(direction);
-  int redValue = getRed(direction);
-  int blueValue = getBlue(direction);
+// bool isRed(bool direction){
+//   int greenValue = getGreen(direction);
+//   int redValue = getRed(direction);
+//   int blueValue = getBlue(direction);
 
-  // logic
+//   // logic
 
-  return true;
-}
+//   return true;
+// }
 
 void intersection(){
   bool isGreenRight = isGreen(RIGHT);
@@ -177,10 +178,10 @@ void intersection(){
 void forward() {
   digitalWrite(in1,HIGH);
   digitalWrite(in2,LOW);
-  analogWrite(ena, speed/2);
+  analogWrite(ena, speed-50);
   digitalWrite(in3,HIGH);
   digitalWrite(in4,LOW);
-  analogWrite(enb, speed/2);
+  analogWrite(enb, speed-50);
 }
 
 void right() {
@@ -229,11 +230,11 @@ void obstacle(){
   stop();
   delay(1000);
 
-  while (ultrasonic_front.read() > object_detection_distance + 10){
+  while (ultrasonic_side.read() > object_detection_distance + 10){
     tank_right();
-    digitalWrite(13, HIGH);
+    // digitalWrite(13, HIGH);
   }
-  digitalWrite(13, LOW);
+  // digitalWrite(13, LOW);
   while (digitalRead(leftSensor)==HIGH && digitalRead(centerSensor)==HIGH && digitalRead(rightSensor)==HIGH){
     if (millis() < object_evation_timer + object_evation_time){
       forward();
@@ -249,20 +250,20 @@ void obstacle(){
 }
 
 void loop() {
-  Serial.print(ultrasonic_front.read());
-  Serial.print("    ");
-  Serial.println(ultrasonic_side.read());
-  // Serial.print(digitalRead(leftSensor));
-  // Serial.print("\t");
-  // Serial.print(digitalRead(centerSensor));
-  // Serial.print("\t");
-  // Serial.println(digitalRead(rightSensor));
+  // Serial.print(ultrasonic_front.read());
+  // Serial.print("    ");
+  // Serial.println(ultrasonic_side.read());
+  Serial.print(digitalRead(leftSensor));
+  Serial.print("\t");
+  Serial.print(digitalRead(centerSensor));
+  Serial.print("\t");
+  Serial.println(digitalRead(rightSensor));
 
 
   // if (isRed(LEFT) || isRed(RIGHT)){
   //   stop();
   // }
-  /*else */if (digitalRead(leftSensor)== LOW, digitalRead(centerSensor)== LOW && digitalRead(rightSensor)== LOW)
+  /*else */if (digitalRead(leftSensor)== LOW && digitalRead(centerSensor)== LOW && digitalRead(rightSensor)== LOW)
   {
     stop();
     intersection();
@@ -279,17 +280,9 @@ void loop() {
   {
     right();
   }
-  else if (digitalRead(leftSensor)==LOW && digitalRead(centerSensor)==LOW && digitalRead(rightSensor)==HIGH)
-  {
-    tank_left();
-  }
-  else if (digitalRead(leftSensor)==HIGH && digitalRead(centerSensor)==LOW && digitalRead(rightSensor)==LOW)
-  {
-    tank_left();
-  }
-  int distance = ultrasonic_front.read();
-  if (distance == 0){ distance = 357;}
-  if (distance < object_detection_distance){
-    obstacle();
-  }  
+  // int distance = ultrasonic_front.read();
+  // if (distance == 0){ distance = 357;}
+  // if (distance < object_detection_distance){
+  //   obstacle();
+  // }
 }
