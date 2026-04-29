@@ -25,7 +25,7 @@ Ultrasonic ultrasonic_side(side_trigPin, side_echoPin);
 const int object_detection_distance = 12; // cm
 
 int object_evation_timer = 0;
-const int object_evation_time = 500;
+const int object_evation_time = 200;
 
 
 #define LEFT_S0 46
@@ -150,12 +150,10 @@ bool isGreen(bool direction){
 // }
 
 void intersection(){
+  delay(1000);
+  
   bool isGreenRight = isGreen(RIGHT);
   bool isGreenLeft = isGreen(LEFT);
-
-  delay(200);
-  stop();
-  delay(1000);
 
   if (!isGreenRight && !isGreenLeft){
     forward();
@@ -233,7 +231,7 @@ void obstacle(){
 
   int distance = 357;
 
-  while (distance > object_detection_distance + 10){
+  while (distance > object_detection_distance + 20){
     tank_right();
     distance = ultrasonic_side.read();
     if (distance == 0) {distance = 357;}
@@ -245,16 +243,25 @@ void obstacle(){
     if (millis() < object_evation_timer + object_evation_time){
       forward();
       digitalWrite(13, HIGH);
+      Serial.println(millis());
     }
     else {
       object_evation_timer = millis();
-      while(distance > object_detection_distance + 10){
+      Serial.print(" heheh ");
+      Serial.println(object_evation_timer);
+
+      distance = ultrasonic_side.read();
+      if (distance == 0) {distance = 357;}
+      Serial.println(distance);
+
+      while(distance > object_detection_distance + 30){
         digitalWrite(13, LOW);
         tank_left();
         distance = ultrasonic_side.read();
         if (distance == 0) {distance = 357;}
         Serial.println(distance);
       }
+      delay(100); // to let it finish a bit more turning
     }
   }
   left();
