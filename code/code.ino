@@ -25,7 +25,7 @@ Ultrasonic ultrasonic_side(side_trigPin, side_echoPin);
 const int object_detection_distance = 12; // cm
 
 int object_evation_timer = 0;
-const int object_evation_time = 1000;
+const int object_evation_time = 500;
 
 
 #define LEFT_S0 46
@@ -112,7 +112,7 @@ void setup() {
   pinMode(centerSensor,INPUT);
   pinMode(rightSensor,INPUT);
 
-  // pinMode(13, OUTPUT);
+  pinMode(13, OUTPUT);
 
   Serial.begin(9600);
   forward();
@@ -201,7 +201,7 @@ void left() {
   digitalWrite(in4,LOW);
   analogWrite(enb, speed);
 }
-void tank_right(){
+void tank_left(){
   digitalWrite(in1,HIGH);
   digitalWrite(in2,LOW);
   analogWrite(ena,speed);
@@ -209,7 +209,7 @@ void tank_right(){
   digitalWrite(in4,HIGH);
   analogWrite(enb,speed);
 }
-void tank_left(){
+void tank_right(){
   digitalWrite(in1,LOW);
   digitalWrite(in2,HIGH);
   analogWrite(ena,speed);
@@ -227,6 +227,7 @@ void stop() {
 }
 
 void obstacle(){
+  digitalWrite(13, HIGH);
   stop();
   delay(1000);
 
@@ -237,18 +238,19 @@ void obstacle(){
     distance = ultrasonic_side.read();
     if (distance == 0) {distance = 357;}
     Serial.println(distance);
-    // digitalWrite(13, HIGH);
+    digitalWrite(13, LOW);
   }
   distance = 357;
-  // digitalWrite(13, LOW);
   while (digitalRead(leftSensor)==HIGH && digitalRead(centerSensor)==HIGH && digitalRead(rightSensor)==HIGH){
     if (millis() < object_evation_timer + object_evation_time){
       forward();
+      digitalWrite(13, HIGH);
     }
     else {
       object_evation_timer = millis();
       while(distance > object_detection_distance + 10){
-        tank_right();
+        digitalWrite(13, LOW);
+        tank_left();
         distance = ultrasonic_side.read();
         if (distance == 0) {distance = 357;}
         Serial.println(distance);
