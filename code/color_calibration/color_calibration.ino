@@ -10,8 +10,8 @@
 #define RIGHT_S3 53
 #define RIGHT_sensorOut 23
 
-#define RIGHT false
-#define LEFT true
+#define RIGHT true
+#define LEFT false
 
 int getGreen(bool direction){
   digitalWrite(direction ? LEFT_S2 : RIGHT_S2, HIGH);
@@ -78,9 +78,9 @@ bool isGreen(bool direction){
 void loop() {
   // delay(5000);
   // int start_millis = millis();
-  // float greenAverage = 0;
-  // float redAverage = 0;
-  // float blueAverage = 0;
+  float greenAverage = 0;
+  float redAverage = 0;
+  float blueAverage = 0;
   // float items = 0;
   // Serial.println("calculating right average...");
   // while(millis() < start_millis + 5000){
@@ -116,19 +116,35 @@ void loop() {
   // items = 0;
   // Serial.println("calculating left average...");
   // while(millis() < start_millis + 5000){
-  //   int green = getGreen(LEFT);
-  //   greenAverage = ((greenAverage * items) + green)/(items+1.0);
-  //   Serial.print(green);
-  //   Serial.print(" ");
+    int green = getGreen(LEFT);
+    // greenAverage = ((greenAverage * items) + green)/(items+1.0);
+    Serial.print(green);
+    Serial.print(" ");
 
-  //   int red = getRed(LEFT);
-  //   redAverage =   ((redAverage * items) + red)/(items+1.0);
-  //   Serial.print(red);
-  //   Serial.print(" ");
+    int red = getRed(LEFT);
+    // redAverage =   ((redAverage * items) + red)/(items+1.0);
+    Serial.print(red);
+    Serial.print(" ");
 
-  //   int blue = getBlue(LEFT);
-  //   blueAverage =  ((blueAverage * items) + blue)/(items+1.0);
-  //   Serial.println(blue);
+    int blue = getBlue(LEFT);
+    // blueAverage =  ((blueAverage * items) + blue)/(items+1.0);
+    Serial.print(blue);
+
+    Serial.print("    ");
+
+    int greenr = getGreen(RIGHT);
+    // greenAverage = ((greenAverage * items) + green)/(items+1.0);
+    Serial.print(greenr);
+    Serial.print(" ");
+
+    int redr = getRed(RIGHT);
+    // redAverage =   ((redAverage * items) + red)/(items+1.0);
+    Serial.print(redr);
+    Serial.print(" ");
+
+    int bluer = getBlue(RIGHT);
+    // blueAverage =  ((blueAverage * items) + blue)/(items+1.0);
+    Serial.println(bluer);
 
   //   items++;
   // }
@@ -138,7 +154,7 @@ void loop() {
   // Serial.print(redAverage);
   // Serial.print("   left blue average: ");
   // Serial.println(blueAverage);
-  Serial.print(isGreen(LEFT));
-  Serial.print("    ");
-  Serial.println(isGreen(RIGHT));
+  // Serial.print(isGreen(LEFT));
+  // Serial.print("    ");
+  // Serial.println(isGreen(RIGHT));
 }
