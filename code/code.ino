@@ -74,12 +74,6 @@ int timer = 0;
 
 const int speed = 200;
 
-long duration;
-long distance;
-long sum = 0;
-
-int numberOfSamples = 10, counter=0;
-
 
 void setup() {
   // color sensors
@@ -120,9 +114,9 @@ void setup() {
 }
 
 bool isGreen(bool direction){
-  int greenValue = getGreen(direction);
-  int redValue = getRed(direction);
-  int blueValue = getBlue(direction);
+  // int greenValue = getGreen(direction);
+  // int redValue = getRed(direction);
+  // int blueValue = getBlue(direction);
 
   // Serial.print(greenValue);
   // Serial.print(" ");
@@ -131,12 +125,8 @@ bool isGreen(bool direction){
   // Serial.print(blueValue);
   // Serial.print("  ");
 
-  if (redValue > 13 && greenValue > 13 && blueValue > 13){
-    return true;
-  }
-  else{
-    return false;
-  }
+  bool isGreen = (getGreen(direction) > 13 && getRed(direction) > 13 && getBlue(direction) > 13);
+  return isGreen;
 }
 
 // bool isRed(bool direction){
@@ -225,41 +215,41 @@ void stop() {
 }
 
 void obstacle(){
-  digitalWrite(13, HIGH);
+  // digitalWrite(13, HIGH);
   stop();
   delay(1000);
 
   int distance = 357;
 
-  while (distance > object_detection_distance + 20){
+  while (distance != 0 && distance > object_detection_distance + 20){
     tank_right();
     distance = ultrasonic_side.read();
-    if (distance == 0) {distance = 357;}
-    Serial.println(distance);
-    digitalWrite(13, LOW);
+    // if (distance == 0) {distance = 357;}
+    // Serial.println(distance);
+    // digitalWrite(13, LOW);
   }
   distance = 357;
   while (digitalRead(leftSensor)==HIGH && digitalRead(centerSensor)==HIGH && digitalRead(rightSensor)==HIGH){
     if (millis() < object_evation_timer + object_evation_time){
       forward();
-      digitalWrite(13, HIGH);
-      Serial.println(millis());
+      // digitalWrite(13, HIGH);
+      // Serial.println(millis());
     }
     else {
       object_evation_timer = millis();
-      Serial.print(" heheh ");
-      Serial.println(object_evation_timer);
+      // Serial.print(" heheh ");
+      // Serial.println(object_evation_timer);
 
       distance = ultrasonic_side.read();
-      if (distance == 0) {distance = 357;}
-      Serial.println(distance);
+      // if (distance == 0) {distance = 357;}
+      // Serial.println(distance);
 
-      while(distance > object_detection_distance + 30){
-        digitalWrite(13, LOW);
+      while(distance != 0 && distance > object_detection_distance + 30){
+        // digitalWrite(13, LOW);
         tank_left();
         distance = ultrasonic_side.read();
-        if (distance == 0) {distance = 357;}
-        Serial.println(distance);
+        // if (distance == 0) {distance = 357;}
+        // Serial.println(distance);
       }
       delay(100); // to let it finish a bit more turning
     }
@@ -268,9 +258,9 @@ void obstacle(){
 }
 
 void loop() {
-  Serial.print(ultrasonic_front.read());
-  Serial.print("    ");
-  Serial.println(ultrasonic_side.read());
+  // Serial.print(ultrasonic_front.read());
+  // Serial.print("    ");
+  // Serial.println(ultrasonic_side.read());
   // Serial.print(digitalRead(leftSensor));
   // Serial.print("\t");
   // Serial.print(digitalRead(centerSensor));
@@ -294,13 +284,13 @@ void loop() {
   {
     left();
   }
-  else if (digitalRead(leftSensor)==HIGH && digitalRead(centerSensor)==HIGH && digitalRead(rightSensor)==LOW)
+  else if (digitalRead(leftSensor)==HIGH && digitalRead(rightSensor)==LOW)
   {
     right();
   }
   int distance = ultrasonic_front.read();
-  if (distance == 0){ distance = 357;}
-  if (distance < object_detection_distance){
+  // if (distance == 0){ distance = 357;}
+  if (0 < distance && distance < object_detection_distance){
     obstacle();
   }
 }
