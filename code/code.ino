@@ -136,16 +136,7 @@ void intersection(){
   bool isGreenRight = isGreen(RIGHT);
   bool isGreenLeft = isGreen(LEFT);
 
-  if (!isGreenRight && !isGreenLeft){
-    forward();
-    delay(500);
-  }
-  else if (isGreenRight && isGreenLeft){
-    tank_right();
-    delay(1000);
-    forward();
-  }
-  else if (isGreenRight){
+  if (isGreenRight){
     left();
     delay(500);
   }
@@ -153,15 +144,18 @@ void intersection(){
     right();
     delay(500);
   }
+  else {
+    forward();
+  }
 }
 
 void forward() {
   digitalWrite(in1,HIGH);
   digitalWrite(in2,LOW);
-  analogWrite(ena, speed-80);
+  analogWrite(ena, speed);
   digitalWrite(in3,HIGH);
   digitalWrite(in4,LOW);
-  analogWrite(enb, speed-80);
+  analogWrite(enb, speed);
 }
 
 void right() {
@@ -181,10 +175,11 @@ void left() {
   digitalWrite(in4,LOW);
   analogWrite(enb, speed);
 }
+
 void tank_left(){
   digitalWrite(in1,LOW);
   digitalWrite(in2,HIGH);
-  analogWrite(ena,speed);
+  analogWrite(ena,speed-50);
   digitalWrite(in3,HIGH);
   digitalWrite(in4,LOW);
   analogWrite(enb,speed);
@@ -192,7 +187,7 @@ void tank_left(){
 void tank_right(){
   digitalWrite(in1,HIGH);
   digitalWrite(in2,LOW);
-  analogWrite(ena,speed);
+  analogWrite(ena,speed-50);
   digitalWrite(in3,LOW);
   digitalWrite(in4,HIGH);
   analogWrite(enb,speed);
@@ -237,6 +232,13 @@ void obstacle(){
       distance = ultrasonic_side.read();
       if (distance == 0) {distance = 357;}
       Serial.println(distance);
+      stop();
+      Serial.print(" heheh ");
+      Serial.println(object_evation_timer);
+
+      distance = ultrasonic_side.read();
+      if (distance == 0) {distance = 357;}
+      Serial.println(distance);
 
       while(distance > object_detection_distance + 20){
         digitalWrite(13, LOW);
@@ -273,19 +275,29 @@ void loop() {
   else if (digitalRead(leftSensor)==HIGH && digitalRead(centerSensor)==LOW && digitalRead(rightSensor)==HIGH)
   {
     forward();
+    delay(10);
+    stop();
+    delay(15);
+      
+    digitalWrite(in1,HIGH);
+    digitalWrite(in2,LOW);
+    analogWrite(ena, speed-80);
+    digitalWrite(in3,HIGH);
+    digitalWrite(in4,LOW);
+    analogWrite(enb, speed-80);
   }
   else if (digitalRead(leftSensor)==LOW && digitalRead(rightSensor)==HIGH)
   {
-    left();
+    tank_left();
   }
   else if (digitalRead(leftSensor)==HIGH && digitalRead(rightSensor)==LOW)
   {
-    right();
+    tank_right();
   }
-  int distance = ultrasonic_front.read();
-  if (distance == 0){ distance = 357;}
-  if (distance < object_detection_distance){
-    obstacle();
-  }
+  // int distance = ultrasonic_front.read();
+  // if (distance == 0){ distance = 357;}
+  // if (distance < object_detection_distance){
+  //   obstacle();
+  // }
   // forward();
 }
